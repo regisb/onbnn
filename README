@@ -1,0 +1,61 @@
+# Optimal Naive Bayes Nearest Neighbors (oNBNN)
+
+In order to understand how oNBNN works, please refer yourself to the following paper:
+"Towards Optimal Naive Bayes Nearest Neighbors", Behmo, Marcombes, Dalalyan, Prinet, ECCV 2010
+available at the following address: http://www.minutebutterfly.de/pro
+
+## Dependencies
+
+Our library requires the following dependencies for compilation:
+  - GNU Linear Programming Kit (GLPK)
+  - Boost::FileSystem library (for the examples only)
+
+Install under ubuntu: 
+  sudo apt-get install libglpk-dev libboost-filesystem-dev
+
+## Build
+
+oNBNN uses a cmake-based build system. This means that you have 
+to execute cmake first, which will produce a makefile best suited
+to your environment.
+
+  mkdir build
+  cd build/
+  cmake ..
+  make
+  sudo make install
+
+You can then run the example1 script which classifies livingroom images vs 
+bedroom images using both optimal NBNN and normal NBNN:
+  example1 ../data/livingroom/ ../data/bedroom/ sift
+
+## Usage
+
+In order to best understand how oNBNN works, it is recommended to take a look at example1.cpp.
+In this example, we are classifiying LivingRoom images vs Bedroom images. Images were taken 
+from the "Fifteen Scene Categories" dataset (available at: http://www-cvr.ai.uiuc.edu/ponce_grp/data/ ). 
+SIFT descriptors were then sampled using van de Sande's binary utility (available at: 
+http://staff.science.uva.nl/~ksande/research/colordescriptors/)
+
+Before we go any further, let us just mention that it is pretty easy for you to launch the example 
+script on your own image data, by following these steps:
+  - put your negative images in data/folder1
+  - put your positive images in data/folder2
+  - sample just any kind of features using the colorDescriptor binary file by van de Sande. This can be best 
+    achieved using the sample_features.rb ruby script located in the data/ folder: 
+      ruby sample_features.rb folder1/ sift
+      ruby sample_features.rb folder2/ sift
+    These two commands produce text files that contain the image features. These filenames are 
+    of the form: imagename___sift.txt
+Once you have gathered the images and feature files, you are ready to start the example script.
+
+All the ressources of the library are gathered in the onbnn namespace. onbnn::BinaryClassifier is what you 
+will use to predict the labels of test data. Both testing and training data come under the form of 
+onbnn::Object instances. 
+  - Training data is added to a classifier through the add_data() method. 
+  - A classifier is trained thanks to the train() method.
+  - Labels of test data are predicted by the predict() method.
+
+## Help
+  
+For further help and information, please contact Régis Behmo (regis.behmo@gmail.com).
