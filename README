@@ -27,7 +27,7 @@ to your environment.
 
 You can then run the example1 script which classifies livingroom images vs 
 bedroom images using both optimal NBNN and normal NBNN:
-  example1 ../data/livingroom/ ../data/bedroom/ sift
+  example1 ../data/sc_livingroom/ ../data/sc_bedroom/ sift
 
 ## Usage
 
