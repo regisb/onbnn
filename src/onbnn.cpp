@@ -134,7 +134,7 @@ namespace onbnn
      {
         glp_set_row_bnds( lp, i+1, GLP_LO, 1.0, 0.0 );// >= 1
 
-        // Iterate over all channels of object c
+        // Iterate over all channels c for the object i
         for(int c = 0; c < data->get_num_channels(); c++)
         {
           // label(i)*alpha_n_c*dist_n_c(i)
