@@ -1,4 +1,5 @@
-add_library (onbnn onbnn.cpp aux_functions.cpp)
+add_library (onbnn SHARED onbnn.cpp aux_functions.cpp)
 target_link_libraries (onbnn glpk)
+target_link_libraries (onbnn vl)
 install (TARGETS onbnn DESTINATION lib)
 install (FILES onbnn.h DESTINATION include)
