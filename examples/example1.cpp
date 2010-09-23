@@ -291,10 +291,10 @@ int main(int argn, char* argc[])
   cout << "Loading reference points..." << endl;
   vector<KeypointSet> points_n(num_channels), points_p(num_channels);
   for(int i = 0; i < img_train1_n.size(); i++)
-    for(int c = 0; c < channels.size(); c++)
+    for(int c = 0; c < num_channels; c++)
       load_points(path_n, img_train1_n[i], channels[c], points_n[c]);
   for(int i = 0; i < img_train1_p.size(); i++)
-    for(int c = 0; c < channels.size(); c++)
+    for(int c = 0; c < num_channels; c++)
       load_points(path_p, img_train1_p[i], channels[c], points_p[c]);
 
   /**************************************************************/ 
