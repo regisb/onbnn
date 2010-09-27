@@ -18,6 +18,8 @@ typedef vector<float> Keypoint;
 typedef vector<Keypoint> KeypointSet;
 typedef pair<onbnn::Object, KeypointSet> Image;
 
+#define NUM_TREES_IN_MEMORY 4
+
 /*
  * Return the square value of any input.
  */
@@ -214,7 +216,7 @@ int load_points(const string& directory, const string& img_name, const string& c
  * corresponding onbnn::Object instance.
  */
 onbnn::Object load_object( const string& img_name, const string& dir_path, const vector<string>& channels, 
-                           const vector<KeypointSet>& points_n, const vector<KeypointSet>& points_p)
+                           const vector<onbnn::NnIndex*>& index_n, const vector<onbnn::NnIndex*>& index_p)
 {
   // Create an object
   onbnn::Object obj;
@@ -229,8 +231,8 @@ onbnn::Object load_object( const string& img_name, const string& dir_path, const
     // Compute NN-distance to negative and positive reference sets for each point
     for(int p = 0; p < points.size(); p++)
     {
-      float dist_n = nn_distance(points[p], points_n[c]);
-      float dist_p = nn_distance(points[p], points_p[c]);
+      float dist_n = index_n[c]->nn_dist(points[p]);
+      float dist_p = index_p[c]->nn_dist(points[p]);
 
       // Add point to object
       obj.add_point(dist_n, dist_p, c);
@@ -297,6 +299,22 @@ int main(int argn, char* argc[])
     for(int c = 0; c < num_channels; c++)
       load_points(path_p, img_train1_p[i], channels[c], points_p[c]);
 
+  // Create negative/positive indexes
+  vector<onbnn::NnIndex*> index_n(num_channels), index_p(num_channels);
+  for(int c = 0; c < num_channels; c++)
+  {
+    // Not very clean, but this allows us to find the 
+    //dimensionality of a channel
+    int dim = points_n[c][0].size();
+    index_n[c] = new onbnn::NnIndex(dim, NUM_TREES_IN_MEMORY);
+    index_p[c] = new onbnn::NnIndex(dim, NUM_TREES_IN_MEMORY);
+
+    cout << "Building negative index for channel " << c << "..." << endl;
+    index_n[c]->build(points_n[c]);
+    cout << "Building positive index for channel " << c << "..." << endl;
+    index_p[c]->build(points_p[c]);
+  }
+
   /**************************************************************/ 
   /************************** Training **************************/
   /**************************************************************/
@@ -306,14 +324,14 @@ int main(int argn, char* argc[])
   for(int i = 0; i < img_train2_n.size(); i++)
   {
     printf("  -> negative image [%d/%d]\n", i, img_train2_n.size()-1);
-    onbnn::Object obj = load_object(img_train2_n[i], path_n, channels, points_n, points_p);
+    onbnn::Object obj = load_object(img_train2_n[i], path_n, channels, index_n, index_p);
     obj.set_label(-1);
     classif.add_data(obj);
   }
   for(int i = 0; i < img_train2_p.size(); i++)
   {
     printf("  -> positive image [%d/%d]\n", i, img_train2_p.size()-1);
-    onbnn::Object obj = load_object(img_train2_p[i], path_p, channels, points_n, points_p);
+    onbnn::Object obj = load_object(img_train2_p[i], path_p, channels, index_n, index_p);
     obj.set_label(1);
     classif.add_data(obj);
   }
@@ -335,7 +353,7 @@ int main(int argn, char* argc[])
   {
     printf("  -> negative image [%d/%d]\n", i, img_test_n.size()-1);
     labels_true.push_back(-1);
-    onbnn::Object obj = load_object(img_test_n[i], path_n, channels, points_n, points_p);
+    onbnn::Object obj = load_object(img_test_n[i], path_n, channels, index_n, index_p);
     labels_predicted_onbnn.push_back(classif.predict(obj));
     labels_predicted_nbnn.push_back(classif_nbnn.predict(obj));
   }
@@ -343,7 +361,7 @@ int main(int argn, char* argc[])
   {
     printf("  -> positive image [%d/%d]\n", i, img_test_p.size()-1);
     labels_true.push_back(1);
-    onbnn::Object obj = load_object(img_test_p[i], path_p, channels, points_n, points_p);
+    onbnn::Object obj = load_object(img_test_p[i], path_p, channels, index_n, index_p);
     labels_predicted_onbnn.push_back(classif.predict(obj));
     labels_predicted_nbnn.push_back(classif_nbnn.predict(obj));
   }

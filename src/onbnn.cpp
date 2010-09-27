@@ -6,12 +6,19 @@ using namespace std;
 
 #include <glpk.h>
 
+extern "C"
+{
+#include <vl/kdtree.h>
+}
+
 #include "onbnn.h"
 #include "aux_functions.h"
 
 namespace onbnn
 {
+  /**************************************************************/
   /************************ Object class ************************/
+  /**************************************************************/
   Object::Object(){ /* void implementation */ }
   Object::Object(float label){ this->_label = label; }
   Object::Object(const Object& src){ *this = src; }
@@ -93,6 +100,12 @@ namespace onbnn
     }
     return s;
   }
+
+
+  /************************************************************************/
+  /************************ BinaryClassifier class ************************/
+  /************************************************************************/
+
 
   /************************ Training ************************/
   void BinaryClassifier::add_data(const Object& x){
@@ -217,5 +230,63 @@ namespace onbnn
       prediction += x.get_cardinal(c)*this->get_beta(c);
     }
     return prediction;
+  }
+
+
+  /***************************************************************/
+  /************************ NnIndex class ************************/
+  /***************************************************************/
+  NnIndex::NnIndex(int dim, int num_trees /* = 1*/)
+  {
+    this->_dim = dim;
+    this->_num_trees = num_trees;
+    this->_data = NULL;
+    this->_forest = vl_kdforest_new(VL_TYPE_FLOAT, this->_dim, this->_num_trees); 		
+  }
+  NnIndex::~NnIndex(){
+    if(this->_forest != NULL)
+      vl_kdforest_delete(this->_forest);
+    if(this->_data != NULL)
+      delete this->_data;
+  }
+  
+  void NnIndex::build(const std::vector< std::vector<float> >& points)
+  {
+    // Compute required memory size
+    int num_points = points.size();
+    int dim = this->_dim;
+    int size = this->_dim*num_points;
+
+    // Delete training data if necessary
+    if(this->_data != NULL)
+      delete this->_data;
+
+    // Assign memory to data
+    this->_data = new float[num_points*dim];
+
+    // Copy training points
+    float* data = this->_data;
+    for(vector< vector<float> >::const_iterator point = points.begin(); point != points.end(); point++)
+      for(vector<float>::const_iterator val = point->begin(); val != point->end(); val++, data++)
+        *data = *val;
+
+    // Build forest
+    vl_kdforest_build(this->_forest, num_points, this->_data); 
+  }
+
+  float NnIndex::nn_dist(const std::vector<float>& x) const{
+    // Build query
+    float* query = new float[this->_dim];
+    copy(x.begin(), x.end(), query);
+
+    // Find nearest neighbor
+	  VlKDForestNeighbor neighbor[1];
+    vl_kdforest_query(this->_forest, neighbor, 1, query);
+
+    // Clean
+    delete query;
+
+    // Return distance
+    return neighbor[0].distance;
   }
 }

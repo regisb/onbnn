@@ -2,7 +2,10 @@
 #define _ONBNN_INCLUDED_
 
 #include <vector>
-
+extern "C"
+{
+#include <vl/kdtree.h>
+}
 namespace onbnn
 {
 
@@ -113,7 +116,32 @@ namespace onbnn
       int _num_channels;
   };
 
+  /*
+   * Print the classifier in a nive way.
+   */
   std::ostream& operator<<(std::ostream& s, const BinaryClassifier& c);
+
+  class NnIndex
+  {
+    public:
+      NnIndex(int dim, int num_trees = 1);
+      ~NnIndex();
+
+      /*
+       * Build an index using some training points.
+       */
+      void build(const std::vector< std::vector<float> >& points);
+      /*
+       * Find the nearest neighbor of a point x and return 
+       * the square L2 distance of its nearest neighbor.
+       */
+      float nn_dist(const std::vector<float>& x) const;
+
+    private:
+      float* _data;
+      VlKDForest* _forest;
+      int _dim, _num_trees;
+  };
 
 }
 

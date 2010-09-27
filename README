@@ -9,9 +9,14 @@ available at the following address: http://www.minutebutterfly.de/pro
 Our library requires the following dependencies for compilation:
   - GNU Linear Programming Kit (GLPK)
   - Boost::FileSystem library (for the examples only)
+  - VlFeat
 
 Install under ubuntu: 
   sudo apt-get install libglpk-dev libboost-filesystem-dev
+
+In order to install the vlfeat library, we provided a simple install.sh script in the 
+vendor/vlfeat folder. Of course, you can also install vlfeat by your own means. The library 
+is available for download at http://www.vlfeat.org.
 
 ## Build
 
