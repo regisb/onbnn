@@ -1,0 +1,4 @@
+- change mplsh filenames
+- write appropriate licenses for each file
+- define an heritage of Index class, so that multiple indexing functions can be used
+- do some profiling
