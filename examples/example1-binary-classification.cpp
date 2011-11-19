@@ -91,7 +91,7 @@ template<class T> void split(const vector<T>& x, vector<T>& x1, vector<T>& x2)
   for(int p = 0; p < n - n2; p++)
     x2.push_back(x[ index[p] ]);
 
-  delete index;
+  delete [] index;
 }
 
 /*
