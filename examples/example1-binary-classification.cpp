@@ -10,7 +10,8 @@
 #include <sstream>
 using namespace std;
 
-#include <boost/filesystem.hpp>   // includes all needed Boost.Filesystem declarations
+#define BOOST_FILESYSTEM_VERSION 2  // code is incompatible with version 3 of the filesystem library
+#include <boost/filesystem.hpp>     // includes all needed Boost.Filesystem declarations
 
 #include <onbnn.h>
 #include <lshkit-onbnn/mplsh-custom.h>
