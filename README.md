@@ -5,8 +5,7 @@ under the form of sets of multi-dimensional features, such as images.
 
 In order to understand how oNBNN works, please refer yourself to the following
 paper: "Towards Optimal Naive Bayes Nearest Neighbors", Behmo, Marcombes,
-Dalalyan, Prinet, ECCV 2010 available at the following address:
-http://www.minutebutterfly.de/pro
+Dalalyan, Prinet, ECCV 2010 available [here] (http://www.minutebutterfly.de/pro).
 
 ## Executive summary
 
@@ -21,7 +20,7 @@ This package is organised in three main parts:
 
 * the source code is located in the src/ folder.
 * the example tools are located in the examples/ folder
-* the image data required to run the example scripts is located in the data/c101_* folders.
+* the image data required to run the example scripts is located in the data/c101... folders.
 
 The source code of optimal-nbnn is itself split in two main parts: 
 
@@ -32,7 +31,7 @@ The source code of optimal-nbnn is itself split in two main parts:
   for nearest neighbor search.
 
 If you intend to use optimal-nbnn with your own work, what you should do is simply to 
-link against the dynamic onbnn library (libonbnn.so) and to `#include <onbnn/onbnn.h>`.
+link against the dynamic onbnn library (`libonbnn.so`) and to `#include <onbnn/onbnn.h>`.
 
 ## Dependencies
 
@@ -45,12 +44,11 @@ The onbnn library requires the following dependencies for compilation:
 
 Install under ubuntu: 
 
-    sudo apt-get install cmake build-essential libglpk-dev \
-    libboost-filesystem-dev libgsl0-dev
+    sudo apt-get install cmake build-essential libglpk-dev libboost-filesystem-dev libgsl0-dev
 
 Note that if you do not intend to use the multi-probe LSH nearest neighbor
 search provided in this package, you do not need the GSL library. Moreover, the
-boost::file_system library is only required to build the example scripts.
+`boost::file_system` library is only required to build the example scripts.
 
 ## Build
 
@@ -71,13 +69,11 @@ bedroom images using both optimal NBNN and normal NBNN (see Examples section bel
 #### Datasets
 
 For our examples, we included the first 20 images of each class from the
-"Fifteen Scene Categories" dataset (available at:
-http://www-cvr.ai.uiuc.edu/ponce_grp/data/ ). 
+"Fifteen Scene Categories" dataset (available [here] (http://www-cvr.ai.uiuc.edu/ponce_grp/data/ )). 
 
 We resized these images so that they all have identical maximum size (400
 pixels). We sampled SIFT features from each image using using van de Sande's
-binary utility (available at:
-http://staff.science.uva.nl/~ksande/research/colordescriptors/)
+binary utility (available [here] (http://staff.science.uva.nl/~ksande/research/colordescriptors/)).
 
 Provided you download van de Sande's binary utility, you can obtain the same
 text files containing the SIFT (or other) features of each image, by running
@@ -87,13 +83,15 @@ the ruby scripts located in the data/ folder:
     ruby sample_features.rb folder2/ sift
     
 These two commands produce text files that contain the image features. These
-filenames are of the form: imagename___sift.txt
+filenames are of the form: `imagename___sift.txt`
 
 ### Examples
 
 #### Example 1: binary, multi-channel classification
 
-Usage: example1 ../data/c101_airplanes/ ../data/c101_car_side/ sift
+Usage:
+
+    example1 ../data/c101_airplanes/ ../data/c101_car_side/ sift
 
 In order to best understand how oNBNN works, it is recommended to take a look at file 
 example1-binary-classification.cpp. 
@@ -111,9 +109,9 @@ Once you have gathered the images and feature files, you are ready to start the 
 All the ressources of the library are gathered in the onbnn namespace.
 onbnn::BinaryClassifier is what you will use to predict the labels of test data. Both testing and training data come under the form of onbnn::Object instances. 
 
-* Training data is added to a classifier through the add_data() method. 
-* A classifier is trained thanks to the train() method.
-* Labels of test data are predicted by the predict() method.
+* Training data is added to a classifier through the `add_data()` method. 
+* A classifier is trained thanks to the `train()` method.
+* Labels of test data are predicted by the `predict()` method.
 
 ## Help
   
