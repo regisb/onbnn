@@ -116,4 +116,4 @@ onbnn::BinaryClassifier is what you will use to predict the labels of test data.
 ## Help
   
 For further help and information, please contact Régis Behmo
-(regis@behmo.com), who is the main maintainer of this project.
+(onbnn@behmo.com), who is the main maintainer of this project.
